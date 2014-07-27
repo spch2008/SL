@@ -8,9 +8,9 @@
 
 sl_server_t *sl_server_create(const char *servname)
 {
-	sl_server_t *server = (sl_server_t*)malloc(sizeof(sl_server_t));
+    sl_server_t *server = (sl_server_t*)malloc(sizeof(sl_server_t));
     if (server == NULL)
-		return NULL;
+	return NULL;
 
     server->thread_num = 0;
     server->real_thread_num = 0;
@@ -22,37 +22,37 @@ sl_server_t *sl_server_create(const char *servname)
     server->handler = NULL;
     
     if (servname == NULL) {
-		sl_server_set_server_name(server, "default server");
+	sl_server_set_server_name(server, "default server");
     } else {
-		sl_server_set_server_name(server, servname);
+	sl_server_set_server_name(server, servname);
     }
 
-	return server;
+    return server;
 }
 
 int sl_server_set_server_name(sl_server_t *server, const char *name)
 {
-	if (server == NULL)
-		return -1;
+    if (server == NULL)
+	return -1;
 
     strncpy(server->serv_name, name, sizeof(server->serv_name));
     server->serv_name[sizeof(server->serv_name)-1] = '\0';
 
-	return 0;
+    return 0;
 }
 
 int sl_server_set_callback(sl_server_t *server, callback_func func)
 {
-	if (server == NULL)
-		return -1;
+    if (server == NULL)
+	return -1;
 
- 	server->handler = func;
-	return 0;
+    server->handler = func;
+    return 0;
 }
 
 int sl_server_bind(sl_server_t *server)
 {
-	int ret;
+    int ret;
     struct addrinfo *result, hint;
     char port[20];
 
@@ -66,16 +66,16 @@ int sl_server_bind(sl_server_t *server)
         
     ret = getaddrinfo(NULL, port, &hint, &result);
     if (ret == -1)
-		return -1;
+	return -1;
     
     server->serv_socket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (server->serv_socket == -1)
-		return -1;
+	return -1;
 
     ret = bind(server->serv_socket, result->ai_addr, result->ai_addrlen);
     if (ret == -1) {
         close(server->serv_socket);
-		return -1;
+	return -1;
     }
     
     // release
@@ -86,7 +86,7 @@ int sl_server_bind(sl_server_t *server)
 
 int sl_server_listen(sl_server_t *server)
 {
-	int backlog = server->backlog;
+    int backlog = server->backlog;
     if (listen(server->serv_socket, server->backlog) < 0) {
     	close(server->serv_socket);
         return -1;
