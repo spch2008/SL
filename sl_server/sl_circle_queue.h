@@ -16,10 +16,10 @@ struct _sl_shared_t
 };
 
 
-int init_queue(int size);
+int init_circle_queue(int size);
 
-int put_event(int fd);
-int get_event(int *fd);
+int put_circle_event(int fd);
+int get_circle_event(int *fd);
 
 
 

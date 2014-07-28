@@ -5,7 +5,7 @@ typedef struct _sl_shared_t sl_shared_t;
 
 static sl_shared_t *queue;
 
-int init_queue(int size)
+int init_circle_queue(int size)
 {
     if (size <= 0)
 	return -1;
@@ -30,7 +30,7 @@ int init_queue(int size)
 }
 
 
-int put_event(int fd)
+int put_circle_event(int fd)
 {
     if (queue == NULL)
 	return -1;
@@ -49,7 +49,7 @@ int put_event(int fd)
     return 0;
 }
 
-int get_event(int *fd)
+int get_circle_event(int *fd)
 {
     if (fd == NULL || queue == NULL)
 	return -1;
