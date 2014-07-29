@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../sl_log/sl_log.h"
-#include "slserver_register.h"
+#include "sl_server_register.h"
 #include <pthread.h>
 
 sl_server_t *sl_server_create(const char *servname)
