@@ -31,7 +31,7 @@ struct _sl_server_tdata_t
     int   read_size;
     int   write_size;
 
-    int fd;
+    int client_fd;
     struct sockaddr client_addr;
 
     sl_server_t *parent;
@@ -50,17 +50,19 @@ struct _sl_server_t
     int real_thread_num;
 
     sl_server_tdata_t *thread_data;
-    int read_size;
-    int write_size;
 
     // socket info
     u_int listen_port;
-    u_int backlog;
-    int   serv_socket;
+    u_int listen_backlog;
+    int   listen_socket;
 
     // call_back
     callback_func handler;
-    callback_func call_back; 
+    callback_func call_back;
+
+    // select pool epoll struct info
+    void *pool;
+    int   pool_data[10];
 };
 
 

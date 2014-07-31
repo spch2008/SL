@@ -33,7 +33,17 @@ int epoll_init(int l_fd, int m_evt)
     return 0;
 }
 
-int epoll_master()
+void *epoll_master(void *param)
+{
+    sl_server_tdata_t *tdata = (sl_server_tdata_t*)param;
+    sl_server_t *server      = tdata->parent;
+
+    while (1) {
+	epoll_produce(
+    }
+}
+
+int epoll_produce()
 {
     int i, nfds;
     struct epoll_event *events = NULL;
@@ -47,6 +57,7 @@ int epoll_master()
         
         for (i = 0; i < nfds; i++) {
             if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)) {
+                epoll_del(events[i].data.fd);
 		close(events[i].data.fd);
 
 	    } else if (events[i].data.fd == listen_fd) {
@@ -54,12 +65,9 @@ int epoll_master()
 		    addrlen = sizeof(struct sockaddr);
                     fd = accept(listen_fd, &addr, &addrlen);
                     if (fd == -1) {
-			if (errno == EAGAIN)
-			    break;
-			else
-			    continue;
+	                continue;
  	 	    }
-	
+	            epoll_add(events[i].data.fd);
     		}
 
 

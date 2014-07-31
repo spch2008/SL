@@ -20,18 +20,18 @@ sl_server_t *sl_server_create(const char *servname)
 
     server->thread_num = 10;
     server->real_thread_num = 0;
-    
     server->thread_data  = NULL;
-    server->read_size    = 100;
-    server->write_size   = 100;
 
     server->listen_port = 8080;
-    server->backlog = 2048;
-    server->serv_socket = -1;
+    server->listen_backlog = 2048;
+    server->listen_socket = -1;
 
     server->handler = NULL;
     server->call_back = default_call_back;
     
+    server->pool = NULL;
+    memset(server->pool_data, 0, sizeof(server->pool));
+
     server->serv_type = 0;
     if (servname == NULL) {
 	sl_server_set_server_name(server, "default server");
