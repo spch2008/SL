@@ -8,6 +8,10 @@
 #include "sl_server_register.h"
 #include <pthread.h>
 
+int default_call_back()
+{
+}
+
 sl_server_t *sl_server_create(const char *servname)
 {
     sl_server_t *server = (sl_server_t*)malloc(sizeof(sl_server_t));
@@ -26,6 +30,7 @@ sl_server_t *sl_server_create(const char *servname)
     server->serv_socket = -1;
 
     server->handler = NULL;
+    server->call_back = default_call_back;
     
     server->serv_type = 0;
     if (servname == NULL) {

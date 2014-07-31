@@ -26,8 +26,8 @@ int epoll_init(int l_fd, int m_evt)
     event.events |= EPOLLIN;
     event.data.fd = sfd;
     
-    res = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_fd, &event);
-    if (res == -1)
+    ret = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_fd, &event);
+    if (ret == -1)
 	return -1;
 
     return 0;
@@ -36,8 +36,9 @@ int epoll_init(int l_fd, int m_evt)
 int epoll_master()
 {
     int i, nfds;
-   
-    struct epoll_event *events = (struct epoll_event*)malloc(sizeof(struct epoll_event) * max_events);
+    struct epoll_event *events = NULL;
+ 
+    events = (struct epoll_event*)malloc(sizeof(struct epoll_event) * max_events);
     if (events == NULL)
 	return -1;
 

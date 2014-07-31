@@ -59,7 +59,8 @@ struct _sl_server_t
     int   serv_socket;
 
     // call_back
-    callback_func handler; 
+    callback_func handler;
+    callback_func call_back; 
 };
 
 
