@@ -11,7 +11,7 @@ struct _sl_circle_queue_t
 };
 
 int init_circle_queue(int size);
-int destroy_cicle_queue();
+int destroy_circle_queue();
 
 int put_circle_item(int fd);
 int get_circle_item(int *fd);

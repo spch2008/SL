@@ -31,6 +31,8 @@ sl_server_t *sl_server_create(const char *servname)
     
     server->pool = NULL;
     memset(server->pool_data, 0, sizeof(server->pool));
+    
+    server->queue_type = 0;    
 
     server->serv_type = 0;
     if (servname == NULL) {
