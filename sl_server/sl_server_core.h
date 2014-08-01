@@ -63,6 +63,8 @@ struct _sl_server_t
     // select pool epoll struct info
     void *pool;
     int   pool_data[10];
+
+    int   queue_type;
 };
 
 
