@@ -1,4 +1,5 @@
 #include "sl_server_event.h"
+#include <pthread.h>
 
 static pthread_key_t g_key;
 static pthread_once_t g_once = PTHREAD_ONCE_INIT;
@@ -20,13 +21,13 @@ int set_tdata(sl_server_tdata_t *data)
 }
 
 
-sl_server_tdata_t *get_tdata()
+static sl_server_tdata_t *get_tdata()
 {
     void *ptr = pthread_getspecific(g_key);
     return (sl_server_tdata_t*)ptr;
 }
 
-void *get_read_buf()
+void *sl_server_get_read_buf()
 {
     sl_server_tdata_t *tdata = get_tdata();
     if (tdata == NULL)
@@ -34,7 +35,7 @@ void *get_read_buf()
     return tdata->read_buf;
 }
 
-int   get_read_size()
+int sl_server_get_read_size()
 {
     sl_server_tdata_t *tdata = get_tdata();
     if (tdata == NULL)
@@ -42,7 +43,7 @@ int   get_read_size()
     return tdata->read_size;
 }
 
-void *get_write_buf()
+void *sl_server_get_write_buf()
 {
     sl_server_tdata_t *tdata = get_tdata();
     if (tdata == NULL)
@@ -50,7 +51,7 @@ void *get_write_buf()
     return tdata->write_buf;
 }
 
-int   get_write_size()
+int sl_server_get_write_size()
 {
     sl_server_tdata_t *tdata = get_tdata();
     if (tdata == NULL)
