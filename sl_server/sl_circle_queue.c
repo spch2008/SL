@@ -69,19 +69,24 @@ int get_circle_queue_size()
 	return queue->size;
 }
 
-bool is_circle_queue_full()
+int is_circle_queue_full()
 {
     if (queue == NULL)
-	return true;
+	return 1;
     
-    return (queue->tail + 1) % queue->size == queue->head;
+    if ((queue->tail + 1) % queue->size == queue->head)
+	return 1;
+    return 0;
 }
 
-bool is_circle_queue_empty()
+int is_circle_queue_empty()
 {
     if (queue == NULL)
-	return false;
+	return 0;
 
-    return queue->tail == queue->head;
+    if (queue->tail == queue->head)
+	return 1;
+
+    return 0;
 }
 

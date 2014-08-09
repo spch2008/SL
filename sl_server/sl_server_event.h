@@ -1,5 +1,6 @@
 #ifndef _SL_SERVER_EVENT_H_
 #define _SL_SERVER_EVENT_H_
+#include "sl_server_core.h"
 
 int set_tdata(sl_server_tdata_t *data);
 sl_server_tdata_t *get_tdata();

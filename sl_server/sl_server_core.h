@@ -43,7 +43,7 @@ struct _sl_server_t
 {
     // server config
     char serv_name[255];
-    u_int serv_type;
+    int  serv_type;
 
     // thread config
     int thread_num;
@@ -55,6 +55,10 @@ struct _sl_server_t
     u_int listen_port;
     u_int listen_backlog;
     int   listen_socket;
+    
+    // buffer size
+    int read_size;
+    int write_size;    
 
     // call_back
     callback_func handler;

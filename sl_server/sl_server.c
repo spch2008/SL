@@ -3,14 +3,21 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
 #include <string.h>
 #include "../sl_log/sl_log.h"
 #include "sl_server_register.h"
+#include "sl_server_queue.h"
 #include <pthread.h>
+
+extern sl_server_event_t g_server_event_pool[];
 
 int default_call_back()
 {
+    printf("haha\n");
 }
+int sl_server_start_work(sl_server_t *server);
 
 sl_server_t *sl_server_create(const char *servname)
 {
@@ -40,6 +47,8 @@ sl_server_t *sl_server_create(const char *servname)
     } else {
 	sl_server_set_server_name(server, servname);
     }
+    
+    sl_server_queue_init(server, 100);    
 
     return server;
 }
@@ -82,13 +91,13 @@ int sl_server_bind(sl_server_t *server)
     if (ret == -1)
 	return -1;
     
-    server->serv_socket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-    if (server->serv_socket == -1)
+    server->listen_socket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    if (server->listen_socket == -1)
 	return -1;
 
-    ret = bind(server->serv_socket, result->ai_addr, result->ai_addrlen);
+    ret = bind(server->listen_socket, result->ai_addr, result->ai_addrlen);
     if (ret == -1) {
-        close(server->serv_socket);
+        close(server->listen_socket);
 	return -1;
     }
     
@@ -100,9 +109,9 @@ int sl_server_bind(sl_server_t *server)
 
 int sl_server_listen(sl_server_t *server)
 {
-    int backlog = server->backlog;
-    if (listen(server->serv_socket, server->backlog) < 0) {
-    	close(server->serv_socket);
+    int backlog = server->listen_backlog;
+    if (listen(server->listen_socket, server->listen_backlog) < 0) {
+    	close(server->listen_socket);
         return -1;
     }
 
@@ -128,6 +137,10 @@ int sl_server_run(sl_server_t *server)
     if (ret == -1)
 	return -1;
 
+    sl_server_event_t *event = &g_server_event_pool[server->serv_type];
+    event->init(1024);
+    event->listen(server->listen_socket);
+
     return sl_server_start_work(server);
 
     //return g_server_type_pool[server->serv_type].run(server);
@@ -139,21 +152,21 @@ int sl_server_start_work(sl_server_t *server)
 	return -1;
 
     // check function exist
-    sl_server_type_pool_t *pool = &g_server_type_pool[server->serv_type];
-    if (pool->master_handler == NULL || pool->worker_handler == NULL)
+    sl_server_event_t *pool = &g_server_event_pool[server->serv_type];
+    if (pool->master == NULL || pool->worker == NULL)
 	return -1;
 
     // create thread
     int ret;
     ret = pthread_create(&(server->thread_data[server->thread_num].tid), NULL,
-                         pool->master_handler, &(server->thread_data[server->thread_num]));
+                         pool->master, &(server->thread_data[server->thread_num]));
 
     if (ret == -1)
 	return -1;
 
     int i;
     for (i = 0; i < server->thread_num; i++) {
-	ret = pthread_create(&(server->thread_data[i].tid), NULL, pool->worker_handler,
+	ret = pthread_create(&(server->thread_data[i].tid), NULL, pool->worker,
                             &(server->thread_data[i]));
     }
 

@@ -3,6 +3,7 @@
 
 #include "sl_server_core.h"
 #include "sl_circle_queue.h"
+#include "sl_epoll_event.h"
 
 #include <stdio.h>
 
@@ -25,7 +26,7 @@ typedef int  (*queue_init)(int);
 typedef int  (*queue_fini)();
 typedef int  (*queue_put)(int);
 typedef int  (*queue_get)(int*);
-typedef bool (*queue_bool)();
+typedef int (*queue_bool)();
 
 struct _sl_server_queue_t
 {
@@ -37,22 +38,6 @@ struct _sl_server_queue_t
     queue_fini destroy;
 };
 typedef struct _sl_server_queue_t sl_server_queue_t;
-
-sl_server_queue_t g_server_queue[] = 
-{
-    { init_circle_queue, 
-      get_circle_item,
-      put_circle_item, 
-      is_circle_queue_full,
-      is_circle_queue_empty,
-      destroy_circle_queue
-    } 
-};
-
-sl_server_event_t g_server_event[] = 
-{
-    {NULL, NULL, NULL, NULL}
-};
 
 
 #endif

@@ -17,8 +17,8 @@ int put_circle_item(int fd);
 int get_circle_item(int *fd);
 
 int get_circle_queue_size();
-bool is_circle_queue_full();
-bool is_circle_queue_empty();
+int is_circle_queue_full();
+int is_circle_queue_empty();
 
 
 
