@@ -12,11 +12,14 @@
 #include <pthread.h>
 
 extern sl_server_event_t g_server_event_pool[];
-
+int default_call_back();
+/*
 int default_call_back()
 {
     printf("haha\n");
 }
+*/
+
 int sl_server_start_work(sl_server_t *server);
 
 sl_server_t *sl_server_create(const char *servname)
@@ -32,6 +35,9 @@ sl_server_t *sl_server_create(const char *servname)
     server->listen_port = 8080;
     server->listen_backlog = 2048;
     server->listen_socket = -1;
+
+    server->read_size = 1024;
+    server->write_size = 1024;
 
     server->handler = NULL;
     server->call_back = default_call_back;

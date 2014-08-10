@@ -2,11 +2,36 @@
 #include "sl_server_register.h"
 #include <pthread.h>
 #include <stdio.h>
+#include <string.h>
+#include "../sl_log/sl_log.h"
 
 extern sl_server_event_t g_server_event_pool[];
 
 static pthread_key_t g_key;
 static pthread_once_t g_once = PTHREAD_ONCE_INIT;
+
+int default_call_back()
+{
+    int res;
+    sl_server_tdata_t  *tdata;
+    sl_server_t *server;
+
+    tdata = get_tdata();
+    server = get_server();
+    
+
+    res = read(tdata->client_fd, tdata->read_buf, tdata->read_size);   
+    //((char*)(tdata->read_buf))[tdata->read_size-1] = '\0';
+
+    
+    server->handler();
+    
+    //((char*)(tdata->write_buf))[tdata->write_size-1] = '\0';
+    write(tdata->client_fd, tdata->write_buf, strlen(tdata->write_buf));
+    
+    return 0;
+}
+
 
 static void create_key_once(void)
 {

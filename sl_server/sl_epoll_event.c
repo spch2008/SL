@@ -75,6 +75,9 @@ static int epoll_consume(sl_server_t *server)
 
     if (res == -1)
 	return -1;
+    
+    sl_server_tdata_t *tdata = get_tdata();
+    tdata->client_fd = fd;
 
     server->call_back();
 }

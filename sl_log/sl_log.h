@@ -3,10 +3,10 @@
 
 #include <stdio.h>
 
-#define SL_LOG_ERROR(fmt, arg...) printf(fmt, arg)
-#define SL_LOG_WARNING(fmt, arg...) printf(fmt, arg)
-#define SL_LOG_TRACE(fmt, arg...) printf(fmt, arg)
-#define SL_LOG_DEBUG(fmt, arg...) printf(fmt, arg)
+#define SL_LOG_ERROR(fmt, arg...) printf(fmt, arg);
+#define SL_LOG_WARN(fmt, arg...) printf(fmt, arg);
+#define SL_LOG_INFO(fmt, arg...) printf(fmt, arg);
+#define SL_LOG_DEBUG(fmt, arg...) printf(fmt, arg);
 
 
 #endif
