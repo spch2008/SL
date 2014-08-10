@@ -13,6 +13,4 @@ int   sl_server_get_write_size();
 
 sl_server_t *get_server();
 
-
-
 #endif
