@@ -1,4 +1,5 @@
 #include "sl_client.h"
+#include "../sl_io/sl_io.h"
 #include <string.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -82,13 +83,20 @@ int sl_client_talk_server(sl_client_t *client)
     if (client == NULL)
 	return -1;
     
-    // write buf to server
-    client->write_buf[client->write_size - 1] = '\0';
-    write(client->fd, client->write_buf, strlen(client->write_buf));
+    sl_io_head_t *req_head = (sl_io_head_t*)sl_client_get_write_buf(client);
 
+    // write buf to server
+    //client->write_buf[client->write_size - 1] = '\0';
+    //write(client->fd, client->write_buf, strlen(client->write_buf));
+    sl_io_write(client->fd, req_head);
+
+
+    sl_io_head_t *res_head = (sl_io_head_t*)sl_client_get_read_buf(client);
+    int res_size = sl_client_get_read_size(client) - sizeof(sl_io_head_t);
     // read buf from server
-    read(client->fd, client->read_buf, client->read_size-1);
-    client->read_buf[client->read_size-1] = '\0';
+    //read(client->fd, client->read_buf, client->read_size-1);
+    //client->read_buf[client->read_size-1] = '\0';
+    sl_io_read(client->fd, res_head, res_size);
 
     return 0;
 }

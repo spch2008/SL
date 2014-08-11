@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../sl_log/sl_log.h"
+#include "../sl_io/sl_io.h"
 
 extern sl_server_event_t g_server_event_pool[];
 
@@ -12,7 +13,7 @@ static pthread_once_t g_once = PTHREAD_ONCE_INIT;
 
 int default_call_back()
 {
-    int res;
+    int ret;
     sl_server_tdata_t  *tdata;
     sl_server_t *server;
 
@@ -20,14 +21,22 @@ int default_call_back()
     server = get_server();
     
 
-    res = read(tdata->client_fd, tdata->read_buf, tdata->read_size);   
+    //res = read(tdata->client_fd, tdata->read_buf, tdata->read_size);   
     //((char*)(tdata->read_buf))[tdata->read_size-1] = '\0';
+
+    sl_io_head_t *req = (sl_io_head_t*)sl_server_get_read_buf();
+    sl_io_head_t *res = (sl_io_head_t*)sl_server_get_write_buf();
+    int req_size = sl_server_get_read_size();
+
+    sl_io_read(tdata->client_fd, req, req_size);
 
     
     server->handler();
     
     //((char*)(tdata->write_buf))[tdata->write_size-1] = '\0';
-    write(tdata->client_fd, tdata->write_buf, strlen(tdata->write_buf));
+    //write(tdata->client_fd, tdata->write_buf, strlen(tdata->write_buf));
+
+    sl_io_write(tdata->client_fd, res);
     
     return 0;
 }
