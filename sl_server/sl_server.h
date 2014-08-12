@@ -3,6 +3,7 @@
 
 #include "sl_server_core.h"
 #include "../sl_log/sl_log.h"
+#include "../sl_common/sl_utils.h"
 #include "sl_server_event.h"
 
 sl_server_t *sl_server_create(const char *servname);

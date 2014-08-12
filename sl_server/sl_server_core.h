@@ -19,14 +19,6 @@ struct _sl_server_tdata_t;
 
 typedef struct _sl_server_t sl_server_t;
 typedef struct _sl_server_tdata_t sl_server_tdata_t;
-typedef struct _sl_server_buf_t sl_server_buf_t;
-
-struct _sl_server_buf_t
-{
-    int size;
-    int used;
-    char *buf;
-};
 
 struct _sl_server_tdata_t
 {
