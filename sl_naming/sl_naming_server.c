@@ -1,11 +1,14 @@
 #include <sys/socket.h>
 #include <sys/select.h>
+#include <netinet/in.h>
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "sl_naming_server.h"
 #include "sl_naming_queue.h"
+#include "../sl_io/sl_io.h"
 
 #define MAX_SERVER 100
 #define MAX_CLIENT 100
@@ -80,10 +83,33 @@ void destroy_naming_server(sl_naming_server_t *server)
     free(server);
 }
 
-int handle(int fd)
+int handle(int fd, unsigned long ip)
 {
     if (fd < 0)
         return -1;
+
+    printf("ip : %d\n", (int)ip);
+    
+    int res, type;
+    sl_io_head_t head;
+
+    res = sl_io_read(fd, &head, sizeof(sl_io_head_t));
+    if (res == -1)
+	return -1;
+
+    type = head.reserved;
+    if (type == 0)
+    {
+        queue_put_item(g_server_queue, fd);
+    }
+    else if (type == 1)
+    {
+        queue_put_item(g_client_queue, fd);
+    }
+    else
+    {
+        return -1;
+    }
 
     return 0; 
 }
@@ -145,7 +171,8 @@ void *master_handler(void *param)
                 fd = client_sockets[i];
                 if (FD_ISSET(fd, &readfds))
                 {
-                   res =  handle(fd);
+                   unsigned long ip = ((struct sockaddr_in*)&remote)->sin_addr.s_addr;
+                   res =  handle(fd, ip);
                    if (res != 0)
 		       client_sockets[i] = 0;
                 }
@@ -160,6 +187,7 @@ void *master_handler(void *param)
 
 void *client_handler(void *param)
 {
+    
 }
 
 

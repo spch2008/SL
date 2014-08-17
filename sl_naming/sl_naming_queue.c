@@ -5,7 +5,7 @@
 
 sl_naming_queue_t *queue_init(int size)
 {
-    if (size < = 0)
+    if (size <= 0)
 	return NULL;
 
     sl_naming_queue_t *queue = (sl_naming_queue_t*)malloc(sizeof(sl_naming_queue_t));    
